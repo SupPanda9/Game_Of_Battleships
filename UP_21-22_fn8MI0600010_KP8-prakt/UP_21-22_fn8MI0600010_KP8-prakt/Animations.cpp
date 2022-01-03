@@ -4,8 +4,10 @@
 
 void opening() {
     const int FREE_LINES = 5;
+    const int LONG_TIME = 750000000;
+    const int SHORT_TIME = 250000000;
 
-    wait();
+    wait(SHORT_TIME);
 
     spacing(FREE_LINES);
 
@@ -13,9 +15,8 @@ void opening() {
     
     spacing(FREE_LINES);
 
-    wait();
+    wait(LONG_TIME);
 
-    clearConsole();
 }
 
 void clearConsole() {
@@ -33,8 +34,8 @@ void clearConsole() {
 #endif
 }
 
-void wait() {
-    for (int i = 0; i <= 1500000000; i++) {
+void wait(int time) {
+    for (int i = 0; i <= time; i++) {
     }
 }
 
@@ -66,4 +67,12 @@ void heading() {
     std::cout << "          | |_) || (_| || |_ | |_ | |  | __/ \\__ \\ | | | || || |_) |\\__ \\ " << std::endl;
     std::cout << "          | ____/ \\__,_| \\__| \\__|| _| \\___| |___/ |_| |_||_|| .__/ |___/ " << std::endl;
     std::cout << "                                                             |_|          " << std::endl;
+}
+
+void menuHeading() {
+    std::cout << "======================================================================" << std::endl;
+    std::cout << "                                  MENU     " << std::endl;
+    std::cout << "======================================================================" << std::endl;
+    std::cout << "Use u to navigate up and d to navigate down through the options. Press c/C to choose." << std::endl;
+    std::cout << std::endl;
 }

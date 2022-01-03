@@ -4,10 +4,12 @@ void opening();
 
 void clearConsole();
 
-void wait();
+void wait(int);
 
 void pressAnyKeyToContinue();
 
 void spacing(int);
 
 void heading();
+
+void menuHeading();
