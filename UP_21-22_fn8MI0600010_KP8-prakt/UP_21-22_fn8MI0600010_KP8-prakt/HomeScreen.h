@@ -1,3 +1,3 @@
 #pragma once
 
-void HomeScreen();
+void homeScreen();
