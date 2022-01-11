@@ -71,8 +71,14 @@ void heading() {
 
 void menuHeading() {
     std::cout << "======================================================================" << std::endl;
-    std::cout << "                                  MENU     " << std::endl;
+    std::cout << "                                 MENU     " << std::endl;
     std::cout << "======================================================================" << std::endl;
-    std::cout << "Use u to navigate up and d to navigate down through the options. Press c/C to choose." << std::endl;
+    std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
+    std::cout << std::endl;
+}
+
+void menuEnding() {
+    std::cout << "======================================================================" << std::endl;
+    std::cout << "======================================================================" << std::endl;
     std::cout << std::endl;
 }

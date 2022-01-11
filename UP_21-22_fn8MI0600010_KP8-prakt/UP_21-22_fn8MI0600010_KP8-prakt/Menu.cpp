@@ -1,8 +1,12 @@
 #include <iostream>
 #include "Menu.h"
 #include "Animations.h"
+#include <fstream>
+#include <string>
 
 void menu() {
+	clearConsole();
+
 	const int LONG_TIME = 750000000;
 	const int SHORT_TIME = 250000000;
 	int option = 1;
@@ -18,11 +22,15 @@ void menu() {
 	std::cout << "  VIEW PREVIOUS RESULTS" << std::endl;
 	std::cout << std::endl;
 
+	menuEnding();
+
 	changeOption(option);
 	
+	Submenu(option);
 }
 
 void changeOption(int &option) { 
+	const int FIRST_MENU_NUMBER = 1, LAST_MENU_NUMBER=3;
 	while (true) {
 		char symbol;
 		std::cin>>symbol;
@@ -34,15 +42,15 @@ void changeOption(int &option) {
 		switch (symbol) {
 		case 'd':
 		case 'D':
-			if (option == 3) {
-				option = 1;
+			if (option == LAST_MENU_NUMBER) {
+				option = FIRST_MENU_NUMBER;
 			}
 			else option++;
 			break;
 		case 'u':
 		case 'U':
-			if (option == 1) {
-				option = 3;
+			if (option == FIRST_MENU_NUMBER) {
+				option = LAST_MENU_NUMBER;
 			}
 			else option--;
 			break;
@@ -63,6 +71,8 @@ void changeOption(int &option) {
 			std::cout << "  VIEW PREVIOUS RESULTS" << std::endl;
 			std::cout << std::endl;
 
+			menuEnding();
+
 			break;
 		case 2:
 			clearConsole();
@@ -75,6 +85,8 @@ void changeOption(int &option) {
 			std::cout << std::endl;
 			std::cout << "  VIEW PREVIOUS RESULTS" << std::endl;
 			std::cout << std::endl;
+
+			menuEnding();
 
 			break;
 		case 3:
@@ -89,8 +101,65 @@ void changeOption(int &option) {
 			std::cout << "> VIEW PREVIOUS RESULTS <" << std::endl;
 			std::cout << std::endl;
 
+			menuEnding();
+
 			break;
 
 		}
 	}
 }
+
+void Submenu(int option) {
+	std::fstream instructions;
+	std::fstream scoreBoard;
+
+	switch (option) {
+	case 1:
+		clearConsole();
+
+		instructions.open("instructions.txt", std::ios::in); //make it a function in a new header
+		if (instructions.is_open()) {
+			std::string line;
+			while (getline(instructions, line)) {
+				std::cout << line << std::endl;
+			}
+			instructions.close();
+		}
+		std::cout << std::endl;
+		
+		pressAnyKeyToContinue();
+
+		menu();
+		break;
+	case 2:
+		clearConsole();
+		std::cout << "Will start game eventually" << std::endl;
+		std::cout << std::endl;
+		pressAnyKeyToContinue();
+		menu();
+		break;
+	case 3:
+		clearConsole();
+
+		scoreBoard.open("scoreBoard.txt", std::ios::in); //make it a function
+		if (scoreBoard.is_open()) {
+			std::string line;
+			while (getline(scoreBoard, line)) {
+				std::cout << line << std::endl;
+			}
+			scoreBoard.close();
+		}
+		std::cout << std::endl;
+
+		pressAnyKeyToContinue();
+
+		menu();
+		break;
+
+	default:
+		menu();
+		break;
+	}
+}
+
+

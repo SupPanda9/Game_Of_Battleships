@@ -13,3 +13,5 @@ void spacing(int);
 void heading();
 
 void menuHeading();
+
+void menuEnding();
