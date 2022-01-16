@@ -3,12 +3,11 @@
 #include "Animations.h"
 #include <fstream>
 #include <string>
+#include "Game.h"
 
 void menu() {
 	clearConsole();
 
-	const int LONG_TIME = 750000000;
-	const int SHORT_TIME = 250000000;
 	int option = 1;
 
 	wait(SHORT_TIME);
@@ -117,7 +116,7 @@ void Submenu(int option) {
 	case 1:
 		clearConsole();
 
-		instructions.open("instructions.txt", std::ios::in); //make it a function in a new header
+		instructions.open("instructions.txt", std::ios::in); //make it a function
 		if (instructions.is_open()) {
 			std::string line;
 			while (getline(instructions, line)) {
@@ -133,10 +132,7 @@ void Submenu(int option) {
 		break;
 	case 2:
 		clearConsole();
-		std::cout << "Will start game eventually" << std::endl;
-		std::cout << std::endl;
-		pressAnyKeyToContinue();
-		menu();
+		game();
 		break;
 	case 3:
 		clearConsole();
