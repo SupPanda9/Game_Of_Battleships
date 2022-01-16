@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Animations.h"
+#include "Menu.h"
 
 const int MAX_PLAYER_NICKNAME_SIZE = 15;
 
@@ -8,12 +9,30 @@ void game() {
 	player firstPlayer;
 	player secondPlayer;
 
-	players(firstPlayer,secondPlayer);
+	players(firstPlayer, secondPlayer);
 
-	checkForSameNickname(firstPlayer,secondPlayer);
+	checkForSameNickname(firstPlayer, secondPlayer);
+
+	nameVerification(firstPlayer, secondPlayer);
+
+	clearConsole();
+
+	menuEnding();
+	std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
+	std::cout << std::endl;
+	std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
+	std::cout << std::endl;
+	std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
+	std::cout << std::endl;
+	
+
+	menuEnding();
+
+	startGameMenu();
 }
 
 void enterPlayers(player &firstPlayer, char *player) {
+
 	std::cout << "Enter the "<<player<<"'s nickname:" << std::endl;
 	std::cout << "Note that it should be between 1 and 15 characters." << std::endl;
 
@@ -22,12 +41,14 @@ void enterPlayers(player &firstPlayer, char *player) {
 }
 
 void players(player &firstPlayer, player &secondPlayer) {
-	
+	menuEnding();
+
 	char playerOne[] = { "first player" };
 	char playerTwo[] = { "second player" };
 
 	enterPlayers(firstPlayer,playerOne);
 	enterPlayers(secondPlayer, playerTwo);
+	
 
 	clearConsole();
 }
@@ -45,6 +66,8 @@ void checkForSameNickname(player &firstPlayer, player &secondPlayer) {
 	}
 
 	if (diffNames) {
+		menuEnding();
+
 		std::cout << "Enter different nicknames!" << std::endl;
 		wait(SHORT_TIME);
 
@@ -52,5 +75,29 @@ void checkForSameNickname(player &firstPlayer, player &secondPlayer) {
 		delete[] secondPlayer.name;
 
 		players(firstPlayer,secondPlayer);
+
+		menuEnding();
+	}
+}
+
+void nameVerification(player &firstPlayer, player &secondPlayer) {
+	menuEnding();
+	
+	std::cout << "First player's name is " << firstPlayer.name << " and second player's name is " << secondPlayer.name << "!" << std::endl;
+	std::cout << "Is this your final choice:" << std::endl;
+	std::cout << "Press 'y' or 'n' for yes/no and enter after that." << std::endl;
+	std::cout << std::endl;
+
+	char yesNo;
+
+	std::cin >> yesNo;
+
+	if (yesNo == 'n' || yesNo == 'N') {
+		clearConsole();
+
+		delete[] firstPlayer.name;
+		delete[] secondPlayer.name;
+		
+		game();
 	}
 }

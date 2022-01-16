@@ -4,4 +4,10 @@ void menu();
 
 void changeOption(int &);
 
-void Submenu(int);
+void submenu(int);
+
+void startGameMenu();
+
+void startGameMenuOption(int &);
+
+void startGameSubmenu(int);

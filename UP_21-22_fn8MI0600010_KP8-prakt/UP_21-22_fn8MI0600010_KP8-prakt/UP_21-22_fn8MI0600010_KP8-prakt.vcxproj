@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="HomeScreen.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h" />
+    <ClInclude Include="Board.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="HomeScreen.h" />
     <ClInclude Include="Menu.h" />
