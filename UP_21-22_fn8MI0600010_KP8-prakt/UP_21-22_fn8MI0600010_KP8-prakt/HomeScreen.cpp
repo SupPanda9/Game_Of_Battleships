@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Animations.h"
 #include "Menu.h"
+#include "Game.h"
 
 void homeScreen() {
 	opening();

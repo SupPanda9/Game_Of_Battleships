@@ -2,33 +2,12 @@
 #include "Game.h"
 #include "Animations.h"
 #include "Menu.h"
+#include "Board.h"
 
 const int MAX_PLAYER_NICKNAME_SIZE = 15;
 
-void game() {
-	player firstPlayer;
-	player secondPlayer;
-
-	players(firstPlayer, secondPlayer);
-
-	checkForSameNickname(firstPlayer, secondPlayer);
-
-	nameVerification(firstPlayer, secondPlayer);
-
-	clearConsole();
-
-	menuEnding();
-	std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
-	std::cout << std::endl;
-	std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
-	std::cout << std::endl;
-	std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
-	std::cout << std::endl;
-	
-
-	menuEnding();
-
-	startGameMenu();
+void game(player &firstPlayer, player& secondPlayer) {
+	board(firstPlayer);
 }
 
 void enterPlayers(player &firstPlayer, char *player) {
@@ -98,6 +77,6 @@ void nameVerification(player &firstPlayer, player &secondPlayer) {
 		delete[] firstPlayer.name;
 		delete[] secondPlayer.name;
 		
-		game();
+		startPreparation(firstPlayer,secondPlayer);
 	}
 }

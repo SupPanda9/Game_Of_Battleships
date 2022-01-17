@@ -5,9 +5,10 @@
 #include <string>
 #include "Game.h"
 
-const int FIRST_MENU_NUMBER = 1, LAST_MENU_NUMBER = 3;
-
 void menu() {
+	struct player firstPlayer;
+	struct player secondPlayer;
+
 	clearConsole();
 
 	int option = FIRST_MENU_NUMBER;
@@ -27,7 +28,7 @@ void menu() {
 
 	changeOption(option);
 	
-	submenu(option);
+	submenu(option, firstPlayer, secondPlayer);
 }
 
 void changeOption(int &option) { 
@@ -110,7 +111,7 @@ void changeOption(int &option) {
 	}
 }
 
-void submenu(int option) {
+void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	std::fstream instructions;
 	std::fstream scoreBoard;
 
@@ -134,7 +135,7 @@ void submenu(int option) {
 		break;
 	case 2:
 		clearConsole();
-		game();
+		startPreparation(firstPlayer,secondPlayer);
 		break;
 	case 3:
 		clearConsole();
@@ -160,12 +161,12 @@ void submenu(int option) {
 	}
 }
 
-void startGameMenu() {
+void startGameMenu(player& firstPlayer, player& secondPlayer) {
 	int startOption = FIRST_MENU_NUMBER;
 
 	startGameMenuOption(startOption);
 
-	startGameSubmenu(startOption);
+	startGameSubmenu(startOption,firstPlayer,secondPlayer);
 }
 
 const int LAST_START_MENU_NUMBER = 2;
@@ -208,7 +209,8 @@ void startGameMenuOption(int &startOption) {
 			clearConsole();
 
 			menuEnding();
-			std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
+
+			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
 			std::cout << std::endl;
 			std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
 			std::cout << std::endl;
@@ -223,7 +225,7 @@ void startGameMenuOption(int &startOption) {
 			clearConsole();
 
 			menuEnding();
-			std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
+			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
 			std::cout << std::endl;
 			std::cout << "  MAKE YOUR CONFIGURATION NOW" << std::endl;
 			std::cout << std::endl;
@@ -239,17 +241,40 @@ void startGameMenuOption(int &startOption) {
 	}
 }
 
-void startGameSubmenu(int startOption) {
+void startGameSubmenu(int startOption, player& firstPlayer, player& secondPlayer) {
 
 	switch (startOption) {
 	case 1:
 		clearConsole();
-		std::cout << "Enter your file name" << std::endl;
+		game(firstPlayer, secondPlayer);
+		break;
 	case 2:
 		clearConsole();
-		std::cout << "Enter the position of your ships" << std::endl;
-		break;
+		std::cout << "Enter your file name" << std::endl;
 	default:
 		break;
 	}
+}
+
+void startPreparation(player& firstPlayer, player& secondPlayer) {
+	players(firstPlayer, secondPlayer);
+
+	checkForSameNickname(firstPlayer, secondPlayer);
+
+	nameVerification(firstPlayer, secondPlayer);
+
+	clearConsole();
+
+	menuEnding();
+
+	std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
+	std::cout << std::endl;
+	std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
+	std::cout << std::endl;
+	std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
+	std::cout << std::endl;
+
+	menuEnding();
+
+	startGameMenu(firstPlayer, secondPlayer);
 }
