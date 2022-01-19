@@ -12,11 +12,13 @@ struct placer {
 	char direction;
 };
 
+void fillBoard(player&);
+
 void board(player&);
 
 int interpretLetterAsArrayIndex(char);
 
-void boardVisualiser();
+void boardVisualiser(player&);
 
 bool validPlace(char, placer&, player&);
 

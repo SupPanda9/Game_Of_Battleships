@@ -14,6 +14,10 @@ const int MEDIUM_SHIP_COUNT = 3;
 const int LARGE_SHIP_COUNT = 2;
 const int CRUISER_COUNT = 1;
 
+const char CAPITAL_A = 'A';
+const char CAPITAL_Z = 'Z';
+const int SMALL_TO_CAPITAL_DIFF = 32;
+
 void board(player& player) {
 	ship smallShip, mediumShip, largeShip, cruiser;
 
@@ -33,15 +37,15 @@ void board(player& player) {
 
 	char shipSelect;
 
+	fillBoard(player);
+
 	menuEnding();
 
 	int allShipsCount;
 	int option;
 
 	while (true) {
-		menuEnding();
-		std::cout << player.name << " is placing ships now!" << std::endl;
-		
+		std::cout << "Enter your ships " << player.name << ":" << std::endl;
 		allShipsCount = smallShip.count + mediumShip.count + largeShip.count + cruiser.count;
 		if (allShipsCount==0) {
 			break;
@@ -56,8 +60,16 @@ void board(player& player) {
 		if (option == 1) {
 			clearConsole();
 			while (true) {
-				std::cout << "Select a ship - s=small ship, m=medium ship, l=large ship, c=cruiser" << std::endl;
-				std::cin >> shipSelect;
+				menuEnding();
+				
+				while (true) {
+					std::cout << "Select a ship - s=small ship, m=medium ship, l=large ship, c=cruiser" << std::endl;
+					std::cin.ignore();
+					std::cin >> shipSelect;
+					if (toLowerCase(shipSelect) == 's' || toLowerCase(shipSelect) == 'm' || toLowerCase(shipSelect) == 'l' || toLowerCase(shipSelect) == 'c') {
+						break;
+					}
+				}
 
 				if (toLowerCase(shipSelect) == 's' && smallShip.count == 0) {
 					std::cout << "You don't have any more small ships to place! Please choose another!" << std::endl;
@@ -87,27 +99,27 @@ void board(player& player) {
 
 			switch (toLowerCase(shipSelect)) {
 			case 's':
-				iterations = SMALL_SHIP_SIZE;
+				iterations = SMALL_SHIP_SIZE-1;
 				smallShip.count--;
 				break;
 			case 'm':
-				iterations = MEDIUM_SHIP_SIZE;
+				iterations = MEDIUM_SHIP_SIZE-1;
 				mediumShip.count--;
 				break;
 			case 'l':
-				iterations = LARGE_SHIP_SIZE;
+				iterations = LARGE_SHIP_SIZE-1;
 				largeShip.count--;
 				break;
 			case 'c':
-				iterations = CRUISER_SIZE;
+				iterations = CRUISER_SIZE-1;
 				cruiser.count--;
 				break;
 			}
 
 			if (validPlace(shipSelect, shipPlacer, player)) {
 				if (shipPlacer.direction == 'u') {
-					for (int i = iterations - 1; i >= 0; i--) {
-						player.board[i + shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
+					for (int i = 0; i <= iterations; i++) {
+						player.board[shipPlacer.number-i - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
 					}
 				}
 				else if (shipPlacer.direction == 'd') {
@@ -116,8 +128,8 @@ void board(player& player) {
 					}
 				}
 				else if (shipPlacer.direction == 'l') {
-					for (int i = iterations - 1; i >= 0; i--) {
-						player.board[shipPlacer.number - 1][i + interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
+					for (int i = 0; i <=iterations; i++) {
+						player.board[shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter)-i] = 'S';
 					}
 				}
 				else if (shipPlacer.direction == 'r') {
@@ -126,6 +138,11 @@ void board(player& player) {
 					}
 				}
 			}
+			clearConsole();
+		}
+		else if (option == 3) {
+			clearConsole();
+			boardVisualiser(player);
 		}
 	}
 }
@@ -178,8 +195,31 @@ int interpretLetterAsArrayIndex(char symbol) {
 	}
 }
 
-void boardVisualiser() {
+void boardVisualiser(player& player) {
+	std::cout << "    ";
 
+	for (int i = 0; i <BOARD_SIZE-1; i++) {
+		std::cout << " " << char(CAPITAL_A + i) << " |";
+	}
+
+	std::cout << std::endl;
+	horizontalLine();
+	
+	for (int i = 0; i < BOARD_SIZE-1; i++) {
+		if (i != BOARD_SIZE - 2) {
+			std::cout << " " << i + 1 << " |";
+		}
+		else {
+			std::cout << i + 1 << " |";
+		}
+		for (int j = 0; j < BOARD_SIZE-1; j++) {
+			std::cout << " " << player.board[i][j] << " |";
+		}
+		std::cout << std::endl;
+		horizontalLine();
+	}
+	pressAnyKeyToContinue();
+	clearConsole();
 }
 
 bool validPlace(char shipSelect, placer &shipPlacer, player &player) { //+ another variable which will be for positions next to other ships
@@ -211,13 +251,17 @@ bool validPlace(char shipSelect, placer &shipPlacer, player &player) { //+ anoth
 	}
 }
 
-const char CAPITAL_A = 'A';
-const char CAPITAL_Z = 'Z';
-const int SMALL_TO_CAPITAL_DIFF = 32;
-
 char toLowerCase(char symbol) {
 	if (symbol >= CAPITAL_A && symbol < CAPITAL_Z) {
 		symbol = symbol + SMALL_TO_CAPITAL_DIFF;
 	}
 	return symbol;
+}
+
+void fillBoard(player& player) {
+	for (int i = 0; i < BOARD_SIZE - 1; i++) {
+		for (int j = 0; j < BOARD_SIZE - 1; j++) {
+			player.board[i][j] = ' ';
+		}
+	}
 }

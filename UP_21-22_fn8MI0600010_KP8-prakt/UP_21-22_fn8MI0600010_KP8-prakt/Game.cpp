@@ -8,11 +8,13 @@ const int MAX_PLAYER_NICKNAME_SIZE = 15;
 
 void game(player &firstPlayer, player& secondPlayer) {
 	board(firstPlayer);
+
+
 }
 
 void enterPlayers(player &firstPlayer, char *player) {
 
-	std::cout << "Enter the "<<player<<"'s nickname:" << std::endl;
+	std::cout << "Enter "<<player<<"'s nickname:" << std::endl;
 	std::cout << "Note that it should be between 1 and 15 characters." << std::endl;
 
 	std::cin.ignore();
@@ -32,30 +34,40 @@ void players(player &firstPlayer, player &secondPlayer) {
 	clearConsole();
 }
 
-void checkForSameNickname(player &firstPlayer, player &secondPlayer) {
+void checkForSameNickname(player &firstPlayer, player &secondPlayer) { //make it work more than once, dc and dcc are not valid! make them
 	int i=0;
 	bool diffNames = true;
-
-	while (firstPlayer.name[i] != '\0') {
-		if (firstPlayer.name[i] != secondPlayer.name[i]) {
-			diffNames = false;
+	
+	while (true) {
+		while (firstPlayer.name[i] != '\0') {
+			if (firstPlayer.name[i] != secondPlayer.name[i]) {
+				diffNames = false;
+				break;
+			}
+			i++;
+		}
+		
+		if (!diffNames) {
 			break;
 		}
-		i++;
-	}
+		
+		if (diffNames) {
+			menuEnding();
 
-	if (diffNames) {
-		menuEnding();
+			std::cout << "Enter different nicknames!" << std::endl;
+			wait(SHORT_TIME);
 
-		std::cout << "Enter different nicknames!" << std::endl;
-		wait(SHORT_TIME);
+			delete[] firstPlayer.name;  
+			delete[] secondPlayer.name;
+			
+			pressAnyKeyToContinue();
+			
+			clearConsole();
+			
+			players(firstPlayer, secondPlayer);
 
-		delete[] firstPlayer.name;
-		delete[] secondPlayer.name;
-
-		players(firstPlayer,secondPlayer);
-
-		menuEnding();
+			menuEnding();
+		}
 	}
 }
 
