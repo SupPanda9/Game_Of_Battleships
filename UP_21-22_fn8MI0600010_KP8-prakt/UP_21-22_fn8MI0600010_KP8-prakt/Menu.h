@@ -8,6 +8,7 @@ const int BOARD_SIZE = 11;
 struct player {
 	char* name = new char[MAX_SIZE_NICKNAME];
 	char board[BOARD_SIZE][BOARD_SIZE];
+	char occupiedBoard[BOARD_SIZE][BOARD_SIZE]{{}};
 };
 
 void menu();

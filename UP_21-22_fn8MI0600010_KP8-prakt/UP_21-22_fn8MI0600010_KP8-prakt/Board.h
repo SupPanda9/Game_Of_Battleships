@@ -22,4 +22,12 @@ void boardVisualiser(player&);
 
 bool validPlace(char, placer&, player&);
 
-char toLowerCase(char symbol);
+char toLowerCase(char);
+
+void placeShips(player&, ship&, ship&, ship&, ship&, placer&);
+
+void occupyPosition(player&);
+
+bool isItAnUnoccupiedPosition(player&, placer&, int);
+
+void occupiedBoardVisualiser(player&);

@@ -16,7 +16,18 @@ const int CRUISER_COUNT = 1;
 
 const char CAPITAL_A = 'A';
 const char CAPITAL_Z = 'Z';
+const char SMALL_A = 'a';
+const char SMALL_Z = 'z';
+
 const int SMALL_TO_CAPITAL_DIFF = 32;
+
+const char DIRECTON_UP = 'u';
+const char DIRECTION_DOWN = 'd';
+const char DIRECTION_LEFT = 'l';
+const char DIRECTON_RIGHT = 'r';
+
+const char OCCUPIED = 'O';
+const char SHIP = 'S';
 
 void board(player& player) {
 	ship smallShip, mediumShip, largeShip, cruiser;
@@ -35,114 +46,60 @@ void board(player& player) {
 
 	placer shipPlacer;
 
-	char shipSelect;
-
 	fillBoard(player);
 
 	menuEnding();
 
 	int allShipsCount;
-	int option;
+	char option;
+	
+	bool tenShipsAvailable = false;
 
 	while (true) {
-		std::cout << "Enter your ships " << player.name << ":" << std::endl;
 		allShipsCount = smallShip.count + mediumShip.count + largeShip.count + cruiser.count;
-		if (allShipsCount==0) {
+
+		if (allShipsCount == 0) {
+			tenShipsAvailable = true;
+		}
+
+		while (true) {
+			std::cout << "Enter your ships " << player.name << ":" << std::endl;
+
+			std::cout << "What do you want to do:" << std::endl;
+			if (!tenShipsAvailable) {
+				std::cout << "1. Place a new ship." << std::endl;
+			}
+			if (tenShipsAvailable) {
+				std::cout << "1. Ready!" << std::endl;
+			}
+			std::cout << "2. Edit the position of an already placed ship." << std::endl;
+			std::cout << "3. See your board." << std::endl;
+			
+			
+
+			std::cin.ignore();
+			std::cin >> option;
+
+			if (option == '1' || option == '2' || option == '3') {
+				break;
+			}
+			else {
+				clearConsole();
+			}
+		}
+
+		if (option == '1' && !tenShipsAvailable) {
+			placeShips(player, smallShip, mediumShip, largeShip, cruiser, shipPlacer);
+		}
+		else if (option == '1' && tenShipsAvailable) {
+			std::cout << "Your final board is:" << std::endl;
+			boardVisualiser(player);
 			break;
 		}
-		
-		std::cout << "What do you want to do:" << std::endl;
-		std::cout << "1. Place a new ship." << std::endl;
-		std::cout << "2. Edit the position of an already placed ship." << std::endl;
-		std::cout << "3. See your board." << std::endl;
-		std::cin >> option;
-
-		if (option == 1) {
-			clearConsole();
-			while (true) {
-				menuEnding();
-				
-				while (true) {
-					std::cout << "Select a ship - s=small ship, m=medium ship, l=large ship, c=cruiser" << std::endl;
-					std::cin.ignore();
-					std::cin >> shipSelect;
-					if (toLowerCase(shipSelect) == 's' || toLowerCase(shipSelect) == 'm' || toLowerCase(shipSelect) == 'l' || toLowerCase(shipSelect) == 'c') {
-						break;
-					}
-				}
-
-				if (toLowerCase(shipSelect) == 's' && smallShip.count == 0) {
-					std::cout << "You don't have any more small ships to place! Please choose another!" << std::endl;
-				}
-				else if (toLowerCase(shipSelect) == 'm' && mediumShip.count == 0) {
-					std::cout << "You don't have any more medium ships to place! Please choose another!" << std::endl;
-				}
-				else if (toLowerCase(shipSelect) == 'l' && largeShip.count == 0) {
-					std::cout << "You don't have any more large ships to place! Please choose another!" << std::endl;
-				}
-				else if (toLowerCase(shipSelect) == 'c' && cruiser.count == 0) {
-					std::cout << "You don't have any more cruisers to place! Please choose another!" << std::endl;
-				}
-				else {
-					break;
-				}
-			}
-
-			std::cout << "Enter coordinates in the format LN, where L stands for letter and\nN stands for number. L can be {A.to.J} and N can be {1.to.10}." << std::endl;
-			std::cin >> shipPlacer.letter;
-			std::cin >> shipPlacer.number;
-
-			std::cout << "Type r,l,u,d to set the direction for the ship." << std::endl;
-			std::cin >> shipPlacer.direction;
-
-			int iterations = 0;
-
-			switch (toLowerCase(shipSelect)) {
-			case 's':
-				iterations = SMALL_SHIP_SIZE-1;
-				smallShip.count--;
-				break;
-			case 'm':
-				iterations = MEDIUM_SHIP_SIZE-1;
-				mediumShip.count--;
-				break;
-			case 'l':
-				iterations = LARGE_SHIP_SIZE-1;
-				largeShip.count--;
-				break;
-			case 'c':
-				iterations = CRUISER_SIZE-1;
-				cruiser.count--;
-				break;
-			}
-
-			if (validPlace(shipSelect, shipPlacer, player)) {
-				if (shipPlacer.direction == 'u') {
-					for (int i = 0; i <= iterations; i++) {
-						player.board[shipPlacer.number-i - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
-					}
-				}
-				else if (shipPlacer.direction == 'd') {
-					for (int i = 0; i <= iterations; i++) {
-						player.board[i + shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
-					}
-				}
-				else if (shipPlacer.direction == 'l') {
-					for (int i = 0; i <=iterations; i++) {
-						player.board[shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter)-i] = 'S';
-					}
-				}
-				else if (shipPlacer.direction == 'r') {
-					for (int i = 0; i <= iterations; i++) {
-						player.board[shipPlacer.number - 1][i + interpretLetterAsArrayIndex(shipPlacer.letter)] = 'S';
-					}
-				}
-			}
-			clearConsole();
-		}
-		else if (option == 3) {
+		else if (option == '3') {
 			clearConsole();
 			boardVisualiser(player);
+			occupiedBoardVisualiser(player);
 		}
 	}
 }
@@ -198,27 +155,171 @@ int interpretLetterAsArrayIndex(char symbol) {
 void boardVisualiser(player& player) {
 	std::cout << "    ";
 
-	for (int i = 0; i <BOARD_SIZE-1; i++) {
+	for (int i = 0; i <BOARD_SIZE-1; i++) { //printing the A,B,C... on top of the board
 		std::cout << " " << char(CAPITAL_A + i) << " |";
 	}
 
 	std::cout << std::endl;
 	horizontalLine();
 	
-	for (int i = 0; i < BOARD_SIZE-1; i++) {
+	for (int i = 0; i < BOARD_SIZE-1; i++) { 
 		if (i != BOARD_SIZE - 2) {
-			std::cout << " " << i + 1 << " |";
+			std::cout << " " << i + 1 << " |"; //printing the numbers in the first column of the borad
 		}
 		else {
 			std::cout << i + 1 << " |";
 		}
 		for (int j = 0; j < BOARD_SIZE-1; j++) {
-			std::cout << " " << player.board[i][j] << " |";
+			std::cout << " " << player.board[i][j] << " |"; //printing the board
 		}
 		std::cout << std::endl;
 		horizontalLine();
 	}
 	pressAnyKeyToContinue();
+	clearConsole();
+}
+
+void occupiedBoardVisualiser(player& player) {
+	std::cout << "    ";
+
+	for (int i = 0; i < BOARD_SIZE - 1; i++) { //printing the A,B,C... on top of the board
+		std::cout << " " << char(CAPITAL_A + i) << " |";
+	}
+
+	std::cout << std::endl;
+	horizontalLine();
+
+	for (int i = 0; i < BOARD_SIZE - 1; i++) {
+		if (i != BOARD_SIZE - 2) {
+			std::cout << " " << i + 1 << " |"; //printing the numbers in the first column of the board
+		}
+		else {
+			std::cout << i + 1 << " |";
+		}
+		for (int j = 0; j < BOARD_SIZE - 1; j++) {
+			std::cout << " " << player.occupiedBoard[i][j] << " |"; //printing the board
+		}
+		std::cout << std::endl;
+		horizontalLine();
+	}
+	pressAnyKeyToContinue();
+	clearConsole();
+}
+
+void placeShips(player& player, ship& smallShip, ship& mediumShip, ship& largeShip, ship& cruiser, placer& shipPlacer) {
+	clearConsole();
+	
+	char shipSelect;
+
+	while (true) {
+		menuEnding();
+
+		while (true) {
+			std::cout << "Select a ship - s=small ship, m=medium ship, l=large ship, c=cruiser" << std::endl;
+			
+			std::cin.ignore();
+			std::cin >> shipSelect;
+
+			if (toLowerCase(shipSelect) == 's' || toLowerCase(shipSelect) == 'm' || toLowerCase(shipSelect) == 'l' || toLowerCase(shipSelect) == 'c') {
+				break;
+			}
+			else {
+				clearConsole();
+			}
+		}
+
+		if (toLowerCase(shipSelect) == 's' && smallShip.count == 0) {
+			std::cout << "You don't have any more small ships to place! Please choose another!" << std::endl;
+			pressAnyKeyToContinue();
+			clearConsole();
+		}
+		else if (toLowerCase(shipSelect) == 'm' && mediumShip.count == 0) {
+			std::cout << "You don't have any more medium ships to place! Please choose another!" << std::endl;
+			pressAnyKeyToContinue();
+			clearConsole();
+		}
+		else if (toLowerCase(shipSelect) == 'l' && largeShip.count == 0) {
+			std::cout << "You don't have any more large ships to place! Please choose another!" << std::endl;
+			pressAnyKeyToContinue();
+			clearConsole();
+		}
+		else if (toLowerCase(shipSelect) == 'c' && cruiser.count == 0) {
+			std::cout << "You don't have any more cruisers to place! Please choose another!" << std::endl;
+			pressAnyKeyToContinue();
+			clearConsole();
+		}
+		else {  //?
+			break;
+		}
+	}
+	int iterations = 0;
+
+	switch (toLowerCase(shipSelect)) {
+	case 's':
+		iterations = SMALL_SHIP_SIZE;
+		break;
+	case 'm':
+		iterations = MEDIUM_SHIP_SIZE;
+		break;
+	case 'l':
+		iterations = LARGE_SHIP_SIZE;
+		break;
+	case 'c':
+		iterations = CRUISER_SIZE;
+		break;
+	}
+
+	std::cout << "Enter coordinates in the format LN, where L stands for letter and\nN stands for number. L can be {A.to.J} and N can be {1.to.10}." << std::endl;
+	std::cin.ignore();
+	std::cin >> shipPlacer.letter;
+	std::cin >> shipPlacer.number; //remove the exceptions especially when giving char to int
+
+	std::cout << "Type r,l,u,d for right, left, up and down to set the direction for the ship." << std::endl;
+	std::cin >> shipPlacer.direction;
+
+	if (validPlace(shipSelect, shipPlacer, player) && isItAnUnoccupiedPosition(player, shipPlacer, iterations)) {
+		if (shipPlacer.direction == 'u') {
+			for (int i = 0; i < iterations; i++) {
+				player.board[shipPlacer.number - i-1][interpretLetterAsArrayIndex(shipPlacer.letter)] = SHIP;
+			}
+		}
+		else if (shipPlacer.direction == 'd') {
+			for (int i = 0; i < iterations; i++) {
+				player.board[i + shipPlacer.number-1][interpretLetterAsArrayIndex(shipPlacer.letter)] = SHIP;
+			}
+		}
+		else if (shipPlacer.direction == 'l') {
+			for (int i = 0; i < iterations; i++) {
+				player.board[shipPlacer.number-1][interpretLetterAsArrayIndex(shipPlacer.letter) - i] = SHIP;
+			}
+		}
+		else if (shipPlacer.direction == 'r') {
+			for (int i = 0; i < iterations; i++) {
+				player.board[shipPlacer.number-1][i + interpretLetterAsArrayIndex(shipPlacer.letter)] = SHIP;
+			}
+		}
+
+		occupyPosition(player);
+
+		switch (toLowerCase(shipSelect)) {
+		case 's':
+			smallShip.count--;
+			break;
+		case 'm':
+			mediumShip.count--;
+			break;
+		case 'l':
+			largeShip.count--;
+			break;
+		case 'c':
+			cruiser.count--;
+			break;
+		}
+	}
+	else {
+		std::cout << "Invalid position!" << std::endl;
+		pressAnyKeyToContinue();
+	}
 	clearConsole();
 }
 
@@ -243,16 +344,47 @@ bool validPlace(char shipSelect, placer &shipPlacer, player &player) { //+ anoth
 		(interpretLetterAsArrayIndex(shipPlacer.letter) >= 5 && shipPlacer.direction == 'r'))) {
 		return false;
 	}
-	/*else if () {
-		return false;
-	}*/
+	else {
+		return true;
+	}
+}
+
+bool isItAnUnoccupiedPosition(player& player, placer& shipPlacer, int iterations) { //checks if any of the places where a ship will be added is occupied (has a ship on or next to it)
+	if (shipPlacer.direction == 'u') {
+		for (int i = 0; i < iterations; i++) {
+			if (player.occupiedBoard[shipPlacer.number - i - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] == OCCUPIED) {
+				return false;
+			}
+		}
+	}
+	else if (shipPlacer.direction == 'd') {
+		for (int i = 0; i < iterations; i++) {
+			if (player.occupiedBoard[i + shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter)] == OCCUPIED) {
+				return false;
+			}
+		}
+	}
+	else if (shipPlacer.direction == 'l') {
+		for (int i = 0; i < iterations; i++) {
+			if (player.occupiedBoard[shipPlacer.number - 1][interpretLetterAsArrayIndex(shipPlacer.letter) - i] == OCCUPIED) {
+				return false;
+			}
+		}
+	}
+	else if (shipPlacer.direction == 'r') {
+		for (int i = 0; i < iterations; i++) {
+			if (player.occupiedBoard[shipPlacer.number - 1][i + interpretLetterAsArrayIndex(shipPlacer.letter)] == OCCUPIED) {
+				return false;
+			}
+		}
+	}
 	else {
 		return true;
 	}
 }
 
 char toLowerCase(char symbol) {
-	if (symbol >= CAPITAL_A && symbol < CAPITAL_Z) {
+	if (symbol >= CAPITAL_A && symbol <= CAPITAL_Z) {
 		symbol = symbol + SMALL_TO_CAPITAL_DIFF;
 	}
 	return symbol;
@@ -264,4 +396,39 @@ void fillBoard(player& player) {
 			player.board[i][j] = ' ';
 		}
 	}
+}
+
+void occupyPosition(player& player) {
+	for (int i = 0; i < BOARD_SIZE - 1; i++) { //check board for invalid places due to bordering a ship
+		for (int j = 0; j < BOARD_SIZE-1; j++) {
+			if (player.board[i][j] == SHIP) {
+				player.occupiedBoard[i][j] = OCCUPIED; //O stands for occupied
+				
+				if (j != 0) {
+					player.occupiedBoard[i][j - 1] = OCCUPIED;
+				}
+				if (i != 0) {
+					player.occupiedBoard[i-1][j] = OCCUPIED;
+				}
+				if (i != 0 && j != 0) {
+					player.occupiedBoard[i - 1][j - 1] = OCCUPIED;
+				}
+				if (j != 9) {
+					player.occupiedBoard[i][j + 1] = OCCUPIED;
+				}
+				if (i != 9) {
+					player.occupiedBoard[i + 1][j] = OCCUPIED;
+				}
+				if (i != 9 && j != 9) {
+					player.occupiedBoard[i + 1][j + 1] = OCCUPIED;
+				}
+				if (j != 0 && i != 9) {
+					player.occupiedBoard[i + 1][j - 1] = OCCUPIED;
+				}
+				if (j != 9 && i != 0) {
+					player.occupiedBoard[i - 1][j + 1] = OCCUPIED;
+				}
+			}
+		}
+	} 
 }

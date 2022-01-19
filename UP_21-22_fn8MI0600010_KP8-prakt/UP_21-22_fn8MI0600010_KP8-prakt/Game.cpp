@@ -76,7 +76,7 @@ void nameVerification(player &firstPlayer, player &secondPlayer) {
 	
 	std::cout << "First player's name is " << firstPlayer.name << " and second player's name is " << secondPlayer.name << "!" << std::endl;
 	std::cout << "Is this your final choice:" << std::endl;
-	std::cout << "Press 'y' or 'n' for yes/no and enter after that." << std::endl;
+	std::cout << "Press any key for yes and 'n' for no and enter after that." << std::endl;
 	std::cout << std::endl;
 
 	char yesNo;
