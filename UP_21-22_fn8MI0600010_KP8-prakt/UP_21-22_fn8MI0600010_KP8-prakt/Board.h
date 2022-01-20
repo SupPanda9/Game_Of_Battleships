@@ -24,10 +24,14 @@ bool validPlace(char, placer&, player&);
 
 char toLowerCase(char);
 
-void placeShips(player&, ship&, ship&, ship&, ship&, placer&);
+void placeShips(player&, ship&, ship&, ship&, ship&, placer&, char);
 
 void occupyPosition(player&);
 
 bool isItAnUnoccupiedPosition(player&, placer&, int);
 
-void occupiedBoardVisualiser(player&);
+void fillOccupiedBoardWZero(player&);
+
+void editShipsPosition(player&, ship&, ship&, ship&, ship&, placer&, char); 
+
+void removeShip(player&, ship&, ship&, ship&, ship&, char&);
