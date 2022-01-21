@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "Game.h"
+#include "Board.h"
 
 void menu() {
 	struct player firstPlayer;
@@ -161,18 +162,12 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	}
 }
 
-void startGameMenu(player& firstPlayer, player& secondPlayer) {
-	int startOption = FIRST_MENU_NUMBER;
-
-	startGameMenuOption(startOption);
-
-	startGameSubmenu(startOption,firstPlayer,secondPlayer);
-}
-
-const int LAST_START_MENU_NUMBER = 2;
-
-void startGameMenuOption(int &startOption) {
+void startGameMenuOption(player& player) {
 	while (true) {
+		menuEnding();
+		
+		std::cout << player.name << " it's your turn! Pick:" << std::endl;
+		
 		char symbol;
 		std::cin >> symbol;
 
@@ -183,32 +178,32 @@ void startGameMenuOption(int &startOption) {
 		switch (symbol) {
 		case 'd':
 		case 'D':
-			if (startOption == LAST_START_MENU_NUMBER) {
-				startOption = FIRST_MENU_NUMBER;
+			if (player.startOption == LAST_START_MENU_NUMBER) {
+				player.startOption = FIRST_MENU_NUMBER;
 			}
 			else {
-				startOption++;
+				player.startOption++;
 			}
 			break;
 		case 'u':
 		case 'U':
-			if (startOption == FIRST_MENU_NUMBER) {
-				startOption = LAST_START_MENU_NUMBER;
+			if (player.startOption == FIRST_MENU_NUMBER) {
+				player.startOption = LAST_START_MENU_NUMBER;
 			}
 			else {
-				startOption--;
+				player.startOption--;
 			}
-			break;
 			break;
 		default:
 			break;
 		}
 
-		switch (startOption) {
+		switch (player.startOption) {
 		case 1:
 			clearConsole();
 
 			menuEnding();
+			std::cout << player.name << " it's your turn! Pick:" << std::endl;
 
 			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
 			std::cout << std::endl;
@@ -217,22 +212,21 @@ void startGameMenuOption(int &startOption) {
 			std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
 			std::cout << std::endl;
 			
-			
-			menuEnding();
 
 			break;
 		case 2:
 			clearConsole();
 
 			menuEnding();
+
+			std::cout << player.name << " it's your turn! Pick:" << std::endl;
+
 			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
 			std::cout << std::endl;
 			std::cout << "  MAKE YOUR CONFIGURATION NOW" << std::endl;
 			std::cout << std::endl;
 			std::cout << "> USE A PREMADE CONFIGURATION <" << std::endl;
 			std::cout << std::endl;
-
-			menuEnding();
 
 			break;
 		default:
@@ -241,16 +235,16 @@ void startGameMenuOption(int &startOption) {
 	}
 }
 
-void startGameSubmenu(int startOption, player& firstPlayer, player& secondPlayer) {
+void startGameSubmenu(player& player) {
 
-	switch (startOption) {
+	switch (player.startOption) {
 	case 1:
 		clearConsole();
-		game(firstPlayer, secondPlayer);
+		board(player);
 		break;
 	case 2:
 		clearConsole();
-		std::cout << "Enter your file name" << std::endl;
+		boardFromFile(player);
 	default:
 		break;
 	}
@@ -265,16 +259,5 @@ void startPreparation(player& firstPlayer, player& secondPlayer) {
 
 	clearConsole();
 
-	menuEnding();
-
-	std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
-	std::cout << std::endl;
-	std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
-	std::cout << std::endl;
-	std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
-	std::cout << std::endl;
-
-	menuEnding();
-
-	startGameMenu(firstPlayer, secondPlayer);
+	game(firstPlayer, secondPlayer);
 }

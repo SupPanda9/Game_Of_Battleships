@@ -3,34 +3,8 @@
 #include "Game.h"
 #include "Menu.h"
 #include "Board.h"
-
-const int SMALL_SHIP_SIZE = 2;
-const int MEDIUM_SHIP_SIZE = 3;
-const int LARGE_SHIP_SIZE = 4;
-const int CRUISER_SIZE = 6;
-
-const int ALL_SHIPS_COUNT = 10;
-const int SMALL_SHIP_COUNT = 4;
-const int MEDIUM_SHIP_COUNT = 3;
-const int LARGE_SHIP_COUNT = 2;
-const int CRUISER_COUNT = 1;
-
-const char CAPITAL_A = 'A';
-const char CAPITAL_Z = 'Z';
-const char SMALL_A = 'a';
-const char SMALL_Z = 'z';
-
-const int SMALL_TO_CAPITAL_DIFF = 32;
-
-const char DIRECTON_UP = 'u';
-const char DIRECTION_DOWN = 'd';
-const char DIRECTION_LEFT = 'l';
-const char DIRECTON_RIGHT = 'r';
-
-const char OCCUPIED = 'O';
-const char SHIP = 'S';
-const char SPACE = ' ';
-const char ZERO = '0';
+#include <fstream>
+#include <string>
 
 void board(player& player) {
 	ship smallShip, mediumShip, largeShip, cruiser;
@@ -96,7 +70,7 @@ void board(player& player) {
 		}
 		else if (option == '1' && tenShipsAvailable) {
 			std::cout << "Your final board is:" << std::endl;
-			boardVisualiser(player);
+			boardVisualiser(player, 'b');
 			break;
 		}
 		else if (option == '2') {
@@ -109,9 +83,22 @@ void board(player& player) {
 		}
 		else if (option == '3') {
 			clearConsole();
-			boardVisualiser(player);
+			boardVisualiser(player, 'b');
 		}
 	}
+}
+
+void boardFromFile(player& player) {
+	/*std::ifstream file;
+	std::string boardInput;
+	
+	std::cout << player.name << " enter your file in this format 'name.txt'!" << std::endl;
+	getline(std::cin, boardInput);
+	
+	file.open(boardInput, std::ios::in);
+	if (file.is_open()) {
+	}
+	file.close();*/
 }
 
 int interpretLetterAsArrayIndex(char symbol) {
@@ -162,7 +149,7 @@ int interpretLetterAsArrayIndex(char symbol) {
 	}
 }
 
-void boardVisualiser(player& player) {
+void boardVisualiser(player& player, char whichBoard) {
 	std::cout << "    ";
 
 	for (int i = 0; i <BOARD_SIZE-1; i++) { //printing the A,B,C... on top of the board
@@ -179,8 +166,13 @@ void boardVisualiser(player& player) {
 		else {
 			std::cout << i + 1 << " |";
 		}
-		for (int j = 0; j < BOARD_SIZE-1; j++) {
-			std::cout << " " << player.board[i][j] << " |"; //printing the board
+		for (int j = 0; j < BOARD_SIZE - 1; j++) {
+			if (whichBoard == 'b') {
+				std::cout << " " << player.board[i][j] << " |"; //printing the board
+			}
+			if (whichBoard == 'h') {
+				std::cout << " " << player.helpBoard[i][j] << " |";
+			}
 		}
 		std::cout << std::endl;
 		horizontalLine();
@@ -253,14 +245,33 @@ void placeShips(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 	}
 	
 	//entering ships on position LN
+	while (true) {
+		std::cout << "Enter coordinates to place a ship in the format LN, where L stands for\nletter and N stands for number. L can be {A.to.J} and N can be {1.to.10}." << std::endl;
+		std::cin.ignore();
+		std::cin >> shipPlacer.letter;
+		std::cin >> shipPlacer.number; //remove the exceptions especially when giving char to int and get values until a right one is entered
+	
+		if (toLowerCase(shipPlacer.letter) >= SMALL_A && toLowerCase(shipPlacer.letter) <= SMALL_J && shipPlacer.number >= 1 && shipPlacer.number <= 10) {
+			break;
+		}
+		else {
+			std::cout << "Invalid input!" << std::endl;
+		}
+	}
 
-	std::cout << "Enter coordinates to place a ship in the format LN, where L stands for\nletter and N stands for number. L can be {A.to.J} and N can be {1.to.10}." << std::endl;
-	std::cin.ignore();
-	std::cin >> shipPlacer.letter;
-	std::cin >> shipPlacer.number; //remove the exceptions especially when giving char to int and get values until 
+	while (true) {
+		std::cout << "Type r,l,u,d for right, left, up and down to set the direction for the ship." << std::endl;
+		std::cin.ignore();
+		std::cin >> shipPlacer.direction;
 
-	std::cout << "Type r,l,u,d for right, left, up and down to set the direction for the ship." << std::endl;
-	std::cin >> shipPlacer.direction;
+		if (toLowerCase(shipPlacer.direction) == DIRECTION_DOWN || toLowerCase(shipPlacer.direction) == DIRECTION_LEFT ||
+			toLowerCase(shipPlacer.direction) == DIRECTION_RIGHT || toLowerCase(shipPlacer.direction) == DIRECTION_UP) {
+			break;
+		}
+		else {
+			std::cout << "Invalid input!" << std::endl;
+		}
+	}
 
 	if (validPlace(shipSelect, shipPlacer, player) && isItAnUnoccupiedPosition(player, shipPlacer, iterations)) {
 		if (shipPlacer.direction == 'u') {
@@ -368,7 +379,7 @@ bool isItAnUnoccupiedPosition(player& player, placer& shipPlacer, int iterations
 	}
 }
 
-char toLowerCase(char symbol) {
+char toLowerCase(char& symbol) {
 	if (symbol >= CAPITAL_A && symbol <= CAPITAL_Z) {
 		symbol = symbol + SMALL_TO_CAPITAL_DIFF;
 	}
@@ -449,14 +460,18 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 		if (player.board[removerNumber-1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) {
 			break;
 		}
+		else {
+			std::cout << "There isn't a ship there!" << std::endl;
+			pressAnyKeyToContinue();
+		}
 	}
 
-	removerNumber -= 1;
+	removerNumber -= 1; //to make it as an index of a 
 	int iterator;
 
 	player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 
-	if (removerNumber != 0 && player.board[removerNumber-1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //u
+	if (removerNumber-1 >= 0 && player.board[removerNumber-1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //u
 		iterator = 1;
 		
 		while (true) {
@@ -467,14 +482,14 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 			player.board[removerNumber - iterator][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 			countDeletions++;
 
-			if (removerNumber - iterator - 1==0) {
+			if (removerNumber - iterator == 0) {
 				break;
 			}
 
 			iterator++;
 		}
 	}
-	if (removerNumber != 10 && player.board[removerNumber +1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //d
+	if (removerNumber+1 <= 9 && player.board[removerNumber +1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //d
 		iterator = 1;
 
 		while (true) {
@@ -485,14 +500,14 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 			player.board[removerNumber + iterator][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 			countDeletions++;
 
-			if ((removerNumber + iterator + 1) == 10) {
+			if ((removerNumber + iterator) == 9) {
 				break;
 			}
 
 			iterator++;
 		}
 	}
-	if (interpretLetterAsArrayIndex(removerLetter) != 0 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)-1] == SHIP) { //l
+	if (interpretLetterAsArrayIndex(removerLetter)-1 >= 0 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)-1] == SHIP) { //l
 		iterator = 1;
 
 		while (true) {
@@ -500,28 +515,28 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 				break;
 			}
 			
-			player.board[removerNumber - 1 - iterator][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
+			player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) - iterator] = SPACE;
 			countDeletions++;
 
-			if ((interpretLetterAsArrayIndex(removerLetter) - iterator - 1) == 0) {
+			if ((interpretLetterAsArrayIndex(removerLetter) - iterator) == 0) {
 				break;
 			}
 
 			iterator ++;
 		}
 	}
-	if (removerNumber != 10 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)+1] == SHIP) {
+	if (interpretLetterAsArrayIndex(removerLetter)+1 <= 9 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)+1] == SHIP) {//r
 		iterator = 1;
 
 		while (true) {
-			if (player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)+1] == SPACE) {
+			if (player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) + iterator] == SPACE) {
 				break;
 			}
 			
-			player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)+1] = SPACE;
+			player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) + iterator] = SPACE;
 			countDeletions++;
 
-			if ((interpretLetterAsArrayIndex(removerLetter) + iterator + 1) == 10) {
+			if ((interpretLetterAsArrayIndex(removerLetter) + iterator) == 9) {
 				break;
 			}
 

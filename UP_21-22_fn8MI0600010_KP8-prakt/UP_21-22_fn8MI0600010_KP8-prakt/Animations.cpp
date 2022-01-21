@@ -27,7 +27,7 @@ void clearConsole() {
     system("clear");
 
 #else
-    for (int i = 0; i <= 1000; i++) {
+    for (int i = 0; i <= 200; i++) {
         cout << std::endl;
     }
 
