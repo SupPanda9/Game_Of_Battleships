@@ -3,8 +3,15 @@
 #include "Animations.h"
 #include "Menu.h"
 #include "Board.h"
+#include <fstream>
+#include "HomeScreen.h"
 
 void game(player &firstPlayer, player& secondPlayer) {
+	int countDestroyedShips1 = 0;
+	int countDestroyedShips2 = 0;
+
+	std::fstream scoreBoard;
+
 	menuEnding();
 
 	std::cout << "Use u to navigate up and d to navigate down through the options. \nPress c/C to choose. Don't forget to press enter after every command." << std::endl;
@@ -29,8 +36,45 @@ void game(player &firstPlayer, player& secondPlayer) {
 	startGameMenuOption(secondPlayer);
 	startGameSubmenu(secondPlayer);
 
-	turns(firstPlayer, secondPlayer);
+	turns(firstPlayer, secondPlayer,countDestroyedShips1,countDestroyedShips2);
+	if (countDestroyedShips1 == 10) {
+		std::cout << firstPlayer.name << " WON!" << std::endl;
+		
+		scoreBoard.open("scoreBoard.txt", std::ios::app);
+		
+		if (scoreBoard.is_open()) {
+			scoreBoard << firstPlayer.name << " WON against " << secondPlayer.name<<std::endl;
+			scoreBoard.close();
+		}
+		
+		delete[] firstPlayer.name;
+		delete[] secondPlayer.name;
+	}
+	else if (countDestroyedShips2 == 10) {
+		std::cout << firstPlayer.name << " WON!" << std::endl;
+		
+		scoreBoard.open("scoreBoard.txt", std::ios::app);
 
+		if (scoreBoard.is_open()) {
+			scoreBoard << secondPlayer.name << " WON against " << firstPlayer.name << std::endl;
+			scoreBoard.close();
+		}
+		
+		delete[] firstPlayer.name;
+		delete[] secondPlayer.name;
+	}
+
+	std::cout<<"Would like to play again? Press y+enter for yes and n+enter for no." << std::endl;
+	char yesNo;
+
+	std::cin >> yesNo;
+	
+	if (toLowerCase(yesNo) == 'y') {
+		homeScreen();
+	}
+	else {
+		pressAnyKeyToContinue();
+	}
 }
 
 void players(player &firstPlayer, player &secondPlayer) {
@@ -113,16 +157,19 @@ void nameVerification(player &firstPlayer, player &secondPlayer) {
 	}
 }
 
-void turns(player& firstPlayer, player& secondPlayer) {
+void turns(player& firstPlayer, player& secondPlayer, int& countDestroyedShips1, int& countDestroyedShips2) {
 	char option;
 	bool firstPlayerTurn = true;
 
 	point firstPoint; 
 	point secondPoint;
 
-	bool firstTurn1=true, firstTurn2=false;
+	bool firstTurn1=true, firstTurn2=true;
 
 	while (true) {
+		if (countDestroyedShips1 == 10 || countDestroyedShips2 == 10) {
+			break;
+		}
 		if (firstPlayerTurn) {
 			std::cout << "It is " << firstPlayer.name << "'s turn!" << std::endl;
 			wait(SHORT_TIME);
@@ -140,7 +187,7 @@ void turns(player& firstPlayer, player& secondPlayer) {
 					boardVisualiser(firstPlayer, 'h');
 				}
 				else if (option == '2') {
-					guessPosition(firstPlayer, secondPlayer, firstPoint, firstPlayerTurn, firstTurn1);
+					guessPosition(firstPlayer, secondPlayer, firstPoint, firstPlayerTurn, firstTurn1, countDestroyedShips1);
 					firstTurn1 = false;
 					break;
 				}
@@ -163,7 +210,7 @@ void turns(player& firstPlayer, player& secondPlayer) {
 					boardVisualiser(firstPlayer, 'h');
 				}
 				else if (option == '2') {
-					guessPosition(secondPlayer, firstPlayer, secondPoint, firstPlayerTurn, firstTurn2);
+					guessPosition(secondPlayer, firstPlayer, secondPoint, firstPlayerTurn, firstTurn2, countDestroyedShips2);
 					firstTurn2 = false;
 					break;
 				}
@@ -195,9 +242,10 @@ void turnOption(player& player, char& option) {
 	}
 }
 
-void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool& firstPlayerTurn, bool firstTurn) {
+void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool& firstPlayerTurn, bool firstTurn, int& countDestroyedShips) {
 	char option, direction;
-
+	
+	//how to guess position
 	while (true) {
 		std::cout << "Choose how to guess position of ship:" << std::endl;
 		std::cout << "1. By entering coordinates." << std::endl;
@@ -216,7 +264,7 @@ void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool
 			std::cout << "Invalid input!" << std::endl;
 		}
 	}
-
+	//first option guessing
 	if (option == '1') {
 		while (true) {
 			std::cout << "Enter coordinates in the format LN, where L stands for letter and\nN stands for number. L can be {A.to.J} and N can be {1.to.10}, to make a guess." << std::endl;
@@ -286,6 +334,7 @@ void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool
 
 		if (isLastCellOfShip(secondPlayer, point)) {
 			std::cout << "You destroyed a whole ship!" << std::endl;
+			countDestroyedShips++;
 		}
 		else {
 			std::cout << "You found a ship!" << std::endl;

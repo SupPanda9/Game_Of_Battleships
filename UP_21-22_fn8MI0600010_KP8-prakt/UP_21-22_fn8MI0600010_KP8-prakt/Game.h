@@ -23,10 +23,10 @@ void nameVerification(player&, player&);
 
 void game(player&, player&);
 
-void turns(player&, player&);
+void turns(player&, player&, int&, int&);
 
 void turnOption(player&, char&);
 
-void guessPosition(player&, player&, point&, bool&, bool);
+void guessPosition(player&, player&, point&, bool&, bool, int&);
 
 bool isLastCellOfShip(player&, point&);
