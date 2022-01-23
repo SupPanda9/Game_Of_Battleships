@@ -47,7 +47,7 @@ void menu() {
 	submenu(option, firstPlayer, secondPlayer);
 }
 
-void changeOption(int &option) { 
+void changeOption(int &option) { //changes the options on the first menu screen
 	while (true) {
 		char symbol;
 
@@ -59,7 +59,7 @@ void changeOption(int &option) {
 			break;
 		}
 
-		switch (symbol) {
+		switch (symbol) { //changes the value of option, based on the given key (d or u)
 		case 'd':
 		case 'D':
 			if (option == LAST_MENU_NUMBER) {
@@ -82,7 +82,7 @@ void changeOption(int &option) {
 			break;
 		}
 
-		switch (option) {
+		switch (option) { //changes the shown selected option
 		case 1:
 			clearConsole();
 
@@ -134,7 +134,7 @@ void changeOption(int &option) {
 	}
 }
 
-void submenu(int option, player& firstPlayer, player& secondPlayer) {
+void submenu(int option, player& firstPlayer, player& secondPlayer) { //gets information from changeOption and proceeds to the next stage of the game 
 	std::fstream instructions;
 	std::fstream scoreBoard;
 
@@ -145,7 +145,7 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 		clearConsole();
 
 		instructions.open("instructions.txt", std::ios::in);
-		if (instructions.is_open()) {
+		if (instructions.is_open()) { //prints the content of instructions.txt
 			std::string line;
 
 			while (getline(instructions, line)) {
@@ -166,13 +166,13 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	case 2:
 		clearConsole();
 
-		startPreparation(firstPlayer, secondPlayer);
+		startPreparation(firstPlayer, secondPlayer); //continues to game
 		
 		break;
 	case 3:
 		clearConsole();
 
-		scoreBoard.open("scoreBoard.txt", std::ios::in);
+		scoreBoard.open("scoreBoard.txt", std::ios::in); //prints the contents of scoreBoard
 		if (scoreBoard.is_open()) {
 			std::string line;
 			while (getline(scoreBoard, line)) {
@@ -191,7 +191,7 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 			pressAnyKeyToContinue();
 		}
 		
-		if (thereIsText) {
+		if (thereIsText) { //if there is text in the file, we will be given an option to delete it
 			std::string yesNo;
 
 			std::cout << "Do you wish to delete records? Press y(yes) or any symbol for no." << std::endl;
@@ -218,19 +218,19 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	}
 }
 
-void startPreparation(player& firstPlayer, player& secondPlayer) {
-	players(firstPlayer, secondPlayer);
+void startPreparation(player& firstPlayer, player& secondPlayer) { //starts the game
+	players(firstPlayer, secondPlayer); //enters players
 
-	checkForSameNickname(firstPlayer, secondPlayer);
+	checkForSameNickname(firstPlayer, secondPlayer); //asks players to change their nicknames if they are the same
 
-	nameVerification(firstPlayer, secondPlayer);
+	nameVerification(firstPlayer, secondPlayer); //asks players if they would like to change their nicknames
 
 	clearConsole();
 
-	game(firstPlayer, secondPlayer);
+	game(firstPlayer, secondPlayer); //starts the real game
 }
 
-void startGameMenuOption(player& player) {
+void startGameMenuOption(player& player) { //asks whether the player would like to enter his board from the console or upload a premade file, works similarly to changeOption
 	while (true) {
 		char symbol;
 
@@ -312,7 +312,7 @@ void startGameMenuOption(player& player) {
 void startGameSubmenu(player& player) {
 	switch (player.startOption) {
 	case 1:
-		clearConsole();
+		clearConsole(); //enter board from the console
 
 		board(player);
 		
@@ -320,7 +320,7 @@ void startGameSubmenu(player& player) {
 	case 2:
 		clearConsole();
 		
-		boardFromFile(player);
+		boardFromFile(player); //enter board from a file
 		
 		break;
 	default:
