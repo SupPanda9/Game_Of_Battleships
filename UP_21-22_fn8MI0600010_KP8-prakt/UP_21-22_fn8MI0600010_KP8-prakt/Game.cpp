@@ -54,7 +54,7 @@ void game(player &firstPlayer, player& secondPlayer) {
 		delete[] secondPlayer.name;
 	}
 	else if (countDestroyedShips2 == 10) {
-		std::cout << firstPlayer.name << " WON!" << std::endl;
+		std::cout << secondPlayer.name << " WON!" << std::endl;
 		
 		scoreBoard.open("scoreBoard.txt", std::ios::app);
 
@@ -122,18 +122,13 @@ void checkForSameNickname(player &firstPlayer, player &secondPlayer) { //make it
 			menuEnding();
 
 			std::cout << "Enter different nicknames!" << std::endl;
-			wait(SHORT_TIME);
-
-			delete[] firstPlayer.name;  
-			delete[] secondPlayer.name;
+			wait(10);
 			
 			pressAnyKeyToContinue();
 			
 			clearConsole();
 			
-			players(firstPlayer, secondPlayer);
-
-			menuEnding();
+			startPreparation(firstPlayer, secondPlayer);
 		}
 	}
 }
@@ -275,25 +270,52 @@ void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool
 			std::cin >> point.number;
 
 			if (toLowerCase(point.letter) >= SMALL_A && toLowerCase(point.letter) <= SMALL_J && point.number >= 1 && point.number <= 10) {
-				break;
+				if (firstPlayer.helpBoard[point.number - 1][interpretLetterAsArrayIndex(point.letter)] == UNSUCCESSFUL_GUESS ||
+					firstPlayer.helpBoard[point.number - 1][interpretLetterAsArrayIndex(point.letter)] == FOUND) {
+					std::cout << "You've already guessed on this position!" << std::endl;
+
+					pressAnyKeyToContinue();
+				}
+				else {
+					break;
+				}
 			}
 			else {
 				std::cout << "Invalid input!" << std::endl;
+				pressAnyKeyToContinue();
 			}
 			clearConsole();
 		}
 	}
 	else {
 		while (true) {
-			std::cout << "Enter direction u, d, l or r, standing for up, down, left and right from your last guess. (" << point.letter << "," << point.number+1 <<")"<< std::endl;
+			std::cout << "Enter direction u, d, l or r, standing for up, down, left and right from your last guess. Press b to go back.(" << point.letter << "," << point.number+1 <<")"<< std::endl;
 			std::cin.ignore();
 			std::cin >> direction;
-
+			
+			if (direction == 'b') {
+				guessPosition(firstPlayer, secondPlayer, point, firstPlayerTurn,firstTurn, countDestroyedShips);
+				return;
+			}
 			if ((direction == DIRECTION_UP && point.number == 0) ||
 				(direction == DIRECTION_DOWN && point.number == 9) ||
 				(direction == DIRECTION_RIGHT && interpretLetterAsArrayIndex(point.letter) == 9) ||
 				(direction == DIRECTION_LEFT && interpretLetterAsArrayIndex(point.letter) == 0)) {
 				std::cout << "Invalid direction." << std::endl;
+				
+				pressAnyKeyToContinue();
+			}
+			else if ((direction==DIRECTION_UP && (firstPlayer.helpBoard[point.number - 1][interpretLetterAsArrayIndex(point.letter)] == UNSUCCESSFUL_GUESS ||
+				firstPlayer.helpBoard[point.number - 1][interpretLetterAsArrayIndex(point.letter)] == FOUND)) ||
+				(direction == DIRECTION_DOWN && (firstPlayer.helpBoard[point.number + 1][interpretLetterAsArrayIndex(point.letter)] == UNSUCCESSFUL_GUESS ||
+					firstPlayer.helpBoard[point.number + 1][interpretLetterAsArrayIndex(point.letter)] == FOUND)) || 
+				(direction == DIRECTION_LEFT && (firstPlayer.helpBoard[point.number][interpretLetterAsArrayIndex(point.letter)-1] == UNSUCCESSFUL_GUESS ||
+						firstPlayer.helpBoard[point.number][interpretLetterAsArrayIndex(point.letter)-1] == FOUND)) ||
+				(direction == DIRECTION_RIGHT && (firstPlayer.helpBoard[point.number][interpretLetterAsArrayIndex(point.letter)+1] == UNSUCCESSFUL_GUESS ||
+					firstPlayer.helpBoard[point.number][interpretLetterAsArrayIndex(point.letter)+1] == FOUND))) {
+				std::cout << "You've already guessed on this position!" << std::endl;
+			
+				pressAnyKeyToContinue();
 			}
 			else if (toLowerCase(direction) == DIRECTION_UP || toLowerCase(direction) == DIRECTION_DOWN ||
 				toLowerCase(direction) == DIRECTION_RIGHT || toLowerCase(direction) == DIRECTION_LEFT) {
@@ -301,6 +323,8 @@ void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool
 			}
 			else {
 				std::cout << "Invalid input!" << std::endl;
+				
+				pressAnyKeyToContinue();
 			}
 			clearConsole();
 		}

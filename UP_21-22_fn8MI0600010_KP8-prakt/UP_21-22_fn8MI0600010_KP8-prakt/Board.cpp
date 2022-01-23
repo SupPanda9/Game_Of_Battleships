@@ -607,3 +607,19 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 		break;
 	}
 }
+
+//bool isFileBoardPossible(player& player) {
+//	for (int i = 0; i < BOARD_SIZE - 1; i++) {
+//		for (int j = 0; j < BOARD_SIZE-1; j++) {
+//			if (player.board[i][j] == SHIP) {
+//				player.occupiedBoard[i][j] == SHIP;
+//				if (j != BOARD_SIZE - 2) {
+//					player.occupiedBoard[i][j+1] == OCCUPIED;
+//				}
+//				if (j != 0) {
+//					player.occupiedBoard[i][j + 1] == OCCUPIED;
+//				}
+//			}
+//		}
+//	}
+//}

@@ -115,6 +115,7 @@ void changeOption(int &option) {
 void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	std::fstream instructions;
 	std::fstream scoreBoard;
+	bool thereIsText = false;
 
 	switch (option) {
 	case 1:
@@ -140,19 +141,40 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 		break;
 	case 3:
 		clearConsole();
-
-		scoreBoard.open("scoreBoard.txt", std::ios::in); //make it a function
+		scoreBoard.open("scoreBoard.txt", std::ios::in);
 		if (scoreBoard.is_open()) {
 			std::string line;
-			while (getline(scoreBoard, line)) {
+			while (getline(scoreBoard, line)){
+				if (line.size() == 0) {
+					break;
+				}
+				thereIsText = true;
 				std::cout << line << std::endl;
 			}
 			scoreBoard.close();
 		}
+		else {
+			std::cout << "No recordings found!" << std::endl;
+			pressAnyKeyToContinue();
+		}
 		std::cout << std::endl;
+		
+		if (thereIsText) {
+			char yesNo;
+			std::cout << "Do you wish to delete records? Press y(yes) or any symbol for no." << std::endl;
+			std::cin.ignore();
+			std::cin >> yesNo;
 
+			if (yesNo == 'y') {
+				scoreBoard.open("scoreBoard.txt", std::ios::out | std::ios::trunc);
+				scoreBoard.close();
+			}
+		}
+		else {
+			std::cout << "No records found!" << std::endl;
+		}
 		pressAnyKeyToContinue();
-
+		
 		menu();
 		break;
 

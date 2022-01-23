@@ -45,6 +45,8 @@ void board(player&);
 
 void boardFromFile(player&);
 
+//bool isFileBoardPossible(player&);
+
 void fillBoard(player&, char);
 
 int interpretLetterAsArrayIndex(char);
