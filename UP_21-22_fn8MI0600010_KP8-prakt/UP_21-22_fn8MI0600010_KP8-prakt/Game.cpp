@@ -36,6 +36,9 @@ void game(player &firstPlayer, player& secondPlayer) {
 	startGameMenuOption(secondPlayer);
 	startGameSubmenu(secondPlayer);
 
+	fillBoard(firstPlayer, 'h');
+	fillBoard(secondPlayer, 'h');
+
 	turns(firstPlayer, secondPlayer,countDestroyedShips1,countDestroyedShips2);
 	if (countDestroyedShips1 == 10) {
 		std::cout << firstPlayer.name << " WON!" << std::endl;
@@ -72,7 +75,7 @@ void game(player &firstPlayer, player& secondPlayer) {
 	if (toLowerCase(yesNo) == 'y') {
 		homeScreen();
 	}
-	else {
+	else if (toLowerCase(yesNo) == 'n') {
 		pressAnyKeyToContinue();
 	}
 }
@@ -207,7 +210,7 @@ void turns(player& firstPlayer, player& secondPlayer, int& countDestroyedShips1,
 					boardVisualiser(secondPlayer, 'b');
 
 					std::cout << "Ships of " << firstPlayer.name << " you have found = F, places where you've guessed unsuccessfully = U." << std::endl;
-					boardVisualiser(firstPlayer, 'h');
+					boardVisualiser(secondPlayer, 'h');
 				}
 				else if (option == '2') {
 					guessPosition(secondPlayer, firstPlayer, secondPoint, firstPlayerTurn, firstTurn2, countDestroyedShips2);
@@ -230,7 +233,6 @@ void turnOption(player& player, char& option) {
 		std::cout << "1. See your boards!" << std::endl;
 		std::cout << "2. Guess." << std::endl;
 
-		std::cin.ignore();
 		std::cin >> option;
 
 		if (option == '1' || option == '2') {
@@ -283,19 +285,19 @@ void guessPosition(player& firstPlayer, player& secondPlayer, point& point, bool
 	}
 	else {
 		while (true) {
-			std::cout << "Enter direction u, d, l or r, standing for up, down, left and right from your last guess." << std::endl;
+			std::cout << "Enter direction u, d, l or r, standing for up, down, left and right from your last guess. (" << point.letter << "," << point.number+1 <<")"<< std::endl;
 			std::cin.ignore();
 			std::cin >> direction;
 
-			if (toLowerCase(direction) == DIRECTION_UP || toLowerCase(direction) == DIRECTION_DOWN ||
-				toLowerCase(direction) == DIRECTION_RIGHT || toLowerCase(direction) == DIRECTION_LEFT) {
-				break;
-			}
-			else if ((direction == DIRECTION_UP && point.number == 0) ||
+			if ((direction == DIRECTION_UP && point.number == 0) ||
 				(direction == DIRECTION_DOWN && point.number == 9) ||
 				(direction == DIRECTION_RIGHT && interpretLetterAsArrayIndex(point.letter) == 9) ||
 				(direction == DIRECTION_LEFT && interpretLetterAsArrayIndex(point.letter) == 0)) {
 				std::cout << "Invalid direction." << std::endl;
+			}
+			else if (toLowerCase(direction) == DIRECTION_UP || toLowerCase(direction) == DIRECTION_DOWN ||
+				toLowerCase(direction) == DIRECTION_RIGHT || toLowerCase(direction) == DIRECTION_LEFT) {
+				break;
 			}
 			else {
 				std::cout << "Invalid input!" << std::endl;

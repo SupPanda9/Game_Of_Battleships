@@ -45,7 +45,7 @@ void board(player&);
 
 void boardFromFile(player&);
 
-void fillBoard(player&);
+void fillBoard(player&, char);
 
 int interpretLetterAsArrayIndex(char);
 

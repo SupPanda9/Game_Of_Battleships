@@ -5,6 +5,7 @@
 #include "Board.h"
 #include <fstream>
 #include <string>
+#include <vector>
 
 void board(player& player) {
 	ship smallShip, mediumShip, largeShip, cruiser;
@@ -23,7 +24,7 @@ void board(player& player) {
 
 	placer shipPlacer;
 
-	fillBoard(player);
+	fillBoard(player,'b');
 
 	menuEnding();
 
@@ -89,16 +90,54 @@ void board(player& player) {
 }
 
 void boardFromFile(player& player) {
-	/*std::ifstream file;
+	std::fstream file;
 	std::string boardInput;
-	
-	std::cout << player.name << " enter your file in this format 'name.txt'!" << std::endl;
+
+	std::vector<std::string> lines;
+	std::string line;
+
+	std::cout << player.name << " enter your file in this format 'name'!" << std::endl;
 	getline(std::cin, boardInput);
 	
+	boardInput += ".txt";
+
 	file.open(boardInput, std::ios::in);
 	if (file.is_open()) {
+		while (getline(file, line)) {
+			if (line.size() != BOARD_SIZE-1) { 
+				std::cout << "Your file is not in the correct format!" << std::endl;
+				file.close();
+				boardFromFile(player);
+				return;
+			}
+			for (int i=0; i < BOARD_SIZE-1; i++) {
+				if (line[i] != 'S' && line[i] != 'E') {
+					std::cout << "Your file doesn't fit the criteria to be consisted of only 'E' and 'S'." << std::endl;
+					boardFromFile(player);
+					return;
+				}
+			}
+			lines.push_back(line);
+		}
+		
+		for (int i = 0; i < BOARD_SIZE-1; i++) {
+			for (int j = 0; j < BOARD_SIZE - 1; j++) {
+				if (lines[i][j] == 'E') {
+					player.board[i][j] = SPACE;
+				}
+				else {
+					player.board[i][j] = lines[i][j];
+				}
+			}
+		}
+		file.close();
 	}
-	file.close();*/
+	else {
+		boardFromFile(player);
+		return;
+	}
+	clearConsole();
+	boardVisualiser(player, 'b');
 }
 
 int interpretLetterAsArrayIndex(char symbol) {
@@ -386,10 +425,15 @@ char toLowerCase(char& symbol) {
 	return symbol;
 }
 
-void fillBoard(player& player) {
+void fillBoard(player& player, char which) {
 	for (int i = 0; i < BOARD_SIZE - 1; i++) {
 		for (int j = 0; j < BOARD_SIZE - 1; j++) {
-			player.board[i][j] = SPACE;
+			if (which == 'b') {
+				player.board[i][j] = SPACE;
+			}
+			else if(which=='h') {
+				player.helpBoard[i][j] = SPACE;
+			}
 		}
 	}
 }
@@ -457,7 +501,7 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 		std::cin >> removerLetter;
 		std::cin >> removerNumber;
 
-		if (player.board[removerNumber-1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) {
+		if (player.board[removerNumber - 1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) {
 			break;
 		}
 		else {
@@ -471,14 +515,14 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 
 	player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 
-	if (removerNumber-1 >= 0 && player.board[removerNumber-1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //u
+	if (removerNumber - 1 >= 0 && player.board[removerNumber - 1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //u
 		iterator = 1;
-		
+
 		while (true) {
 			if (player.board[removerNumber - iterator][interpretLetterAsArrayIndex(removerLetter)] == SPACE) {
 				break;
 			}
-			
+
 			player.board[removerNumber - iterator][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 			countDeletions++;
 
@@ -489,14 +533,14 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 			iterator++;
 		}
 	}
-	if (removerNumber+1 <= 9 && player.board[removerNumber +1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //d
+	if (removerNumber + 1 <= 9 && player.board[removerNumber + 1][interpretLetterAsArrayIndex(removerLetter)] == SHIP) { //d
 		iterator = 1;
 
 		while (true) {
 			if (player.board[removerNumber + iterator][interpretLetterAsArrayIndex(removerLetter)] == SPACE) {
 				break;
 			}
-			
+
 			player.board[removerNumber + iterator][interpretLetterAsArrayIndex(removerLetter)] = SPACE;
 			countDeletions++;
 
@@ -507,14 +551,14 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 			iterator++;
 		}
 	}
-	if (interpretLetterAsArrayIndex(removerLetter)-1 >= 0 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)-1] == SHIP) { //l
+	if (interpretLetterAsArrayIndex(removerLetter) - 1 >= 0 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) - 1] == SHIP) { //l
 		iterator = 1;
 
 		while (true) {
 			if (player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) - iterator] == SPACE) {
 				break;
 			}
-			
+
 			player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) - iterator] = SPACE;
 			countDeletions++;
 
@@ -522,17 +566,17 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 				break;
 			}
 
-			iterator ++;
+			iterator++;
 		}
 	}
-	if (interpretLetterAsArrayIndex(removerLetter)+1 <= 9 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter)+1] == SHIP) {//r
+	if (interpretLetterAsArrayIndex(removerLetter) + 1 <= 9 && player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) + 1] == SHIP) {//r
 		iterator = 1;
 
 		while (true) {
 			if (player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) + iterator] == SPACE) {
 				break;
 			}
-			
+
 			player.board[removerNumber][interpretLetterAsArrayIndex(removerLetter) + iterator] = SPACE;
 			countDeletions++;
 

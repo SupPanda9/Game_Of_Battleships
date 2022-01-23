@@ -233,6 +233,7 @@ void startGameMenuOption(player& player) {
 			break;
 		}
 	}
+	std::cin.ignore();
 }
 
 void startGameSubmenu(player& player) {
