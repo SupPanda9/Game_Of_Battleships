@@ -48,12 +48,14 @@ void menu() {
 }
 
 void changeOption(int &option) { 
-	
 	while (true) {
 		char symbol;
-		std::cin>>symbol;
+
+		std::cin >> symbol;
 
 		if (symbol == 'C' || symbol == 'c') {
+			std::cin.ignore();
+
 			break;
 		}
 
@@ -63,14 +65,18 @@ void changeOption(int &option) {
 			if (option == LAST_MENU_NUMBER) {
 				option = FIRST_MENU_NUMBER;
 			}
-			else option++;
+			else {
+				option++;
+			}
 			break;
 		case 'u':
 		case 'U':
 			if (option == FIRST_MENU_NUMBER) {
 				option = LAST_MENU_NUMBER;
 			}
-			else option--;
+			else {
+				option--;
+			}
 			break;
 		default:
 			break;
@@ -122,7 +128,8 @@ void changeOption(int &option) {
 			menuEnding();
 
 			break;
-
+		default:
+			break;
 		}
 	}
 }
@@ -130,57 +137,68 @@ void changeOption(int &option) {
 void submenu(int option, player& firstPlayer, player& secondPlayer) {
 	std::fstream instructions;
 	std::fstream scoreBoard;
+
 	bool thereIsText = false;
 
 	switch (option) {
 	case 1:
 		clearConsole();
 
-		instructions.open("instructions.txt", std::ios::in); //make it a function
+		instructions.open("instructions.txt", std::ios::in);
 		if (instructions.is_open()) {
 			std::string line;
+
 			while (getline(instructions, line)) {
 				std::cout << line << std::endl;
 			}
 			instructions.close();
+		}
+		else {
+			std::cout << "Nothing found!" << std::endl;
 		}
 		std::cout << std::endl;
 		
 		pressAnyKeyToContinue();
 
 		menu();
+
 		break;
 	case 2:
 		clearConsole();
-		startPreparation(firstPlayer,secondPlayer);
+
+		startPreparation(firstPlayer, secondPlayer);
+		
 		break;
 	case 3:
 		clearConsole();
+
 		scoreBoard.open("scoreBoard.txt", std::ios::in);
 		if (scoreBoard.is_open()) {
 			std::string line;
-			while (getline(scoreBoard, line)){
+			while (getline(scoreBoard, line)) {
 				if (line.size() == 0) {
 					break;
 				}
 				thereIsText = true;
+				
 				std::cout << line << std::endl;
 			}
 			scoreBoard.close();
 		}
 		else {
-			std::cout << "No recordings found!" << std::endl;
+			std::cout << "No records found!" << std::endl;
+			
 			pressAnyKeyToContinue();
 		}
-		std::cout << std::endl;
 		
 		if (thereIsText) {
-			char yesNo;
+			std::string yesNo;
+
 			std::cout << "Do you wish to delete records? Press y(yes) or any symbol for no." << std::endl;
-			std::cin.ignore();
+			
 			std::cin >> yesNo;
 
-			if (yesNo == 'y') {
+			if (yesNo[0] == 'y') {
 				scoreBoard.open("scoreBoard.txt", std::ios::out | std::ios::trunc);
 				scoreBoard.close();
 			}
@@ -191,21 +209,31 @@ void submenu(int option, player& firstPlayer, player& secondPlayer) {
 		pressAnyKeyToContinue();
 		
 		menu();
-		break;
 
+		break;
 	default:
 		menu();
+
 		break;
 	}
 }
 
+void startPreparation(player& firstPlayer, player& secondPlayer) {
+	players(firstPlayer, secondPlayer);
+
+	checkForSameNickname(firstPlayer, secondPlayer);
+
+	nameVerification(firstPlayer, secondPlayer);
+
+	clearConsole();
+
+	game(firstPlayer, secondPlayer);
+}
+
 void startGameMenuOption(player& player) {
 	while (true) {
-		menuEnding();
-		
-		std::cout << player.name << " it's your turn! Pick:" << std::endl;
-		
 		char symbol;
+
 		std::cin >> symbol;
 
 		if (symbol == 'C' || symbol == 'c') {
@@ -240,15 +268,19 @@ void startGameMenuOption(player& player) {
 			clearConsole();
 
 			menuEnding();
+
 			std::cout << player.name << " it's your turn! Pick:" << std::endl;
 
-			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
+			spacing(1);
+
+			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every\ncommand." << std::endl;
 			std::cout << std::endl;
 			std::cout << "> MAKE YOUR CONFIGURATION NOW <" << std::endl;
 			std::cout << std::endl;
 			std::cout << "  USE A PREMADE CONFIGURATION" << std::endl;
 			std::cout << std::endl;
 			
+			menuEnding();
 
 			break;
 		case 2:
@@ -258,12 +290,16 @@ void startGameMenuOption(player& player) {
 
 			std::cout << player.name << " it's your turn! Pick:" << std::endl;
 
-			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every command." << std::endl;
+			spacing(1);
+
+			std::cout << "Use 'u' to navigate up and 'd' to navigate down through the options. \nPress 'c' or 'C' to choose. Don't forget to press enter after every\ncommand." << std::endl;
 			std::cout << std::endl;
 			std::cout << "  MAKE YOUR CONFIGURATION NOW" << std::endl;
 			std::cout << std::endl;
 			std::cout << "> USE A PREMADE CONFIGURATION <" << std::endl;
 			std::cout << std::endl;
+			
+			menuEnding();
 
 			break;
 		default:
@@ -274,28 +310,20 @@ void startGameMenuOption(player& player) {
 }
 
 void startGameSubmenu(player& player) {
-
 	switch (player.startOption) {
 	case 1:
 		clearConsole();
+
 		board(player);
+		
 		break;
 	case 2:
 		clearConsole();
+		
 		boardFromFile(player);
+		
+		break;
 	default:
 		break;
 	}
-}
-
-void startPreparation(player& firstPlayer, player& secondPlayer) {
-	players(firstPlayer, secondPlayer);
-
-	checkForSameNickname(firstPlayer, secondPlayer);
-
-	nameVerification(firstPlayer, secondPlayer);
-
-	clearConsole();
-
-	game(firstPlayer, secondPlayer);
 }

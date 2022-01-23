@@ -15,6 +15,10 @@
 
 #pragma once
 
+const int LONG_TIME = 500000000;
+const int SHORT_TIME = 250000000;
+const int FREE_LINES = 5;
+
 void opening();
 
 void clearConsole();
@@ -34,6 +38,3 @@ void menuEnding();
 void line();
 
 void horizontalLine();
-
-const int LONG_TIME = 750000000;
-const int SHORT_TIME = 250000000;

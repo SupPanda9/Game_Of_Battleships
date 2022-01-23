@@ -59,28 +59,28 @@ struct placer {
 
 void board(player&);
 
-void boardFromFile(player&);
-
-bool isFileBoardPossible(player&);
-
 void fillBoard(player&, char);
-
-int interpretLetterAsArrayIndex(char);
 
 void boardVisualiser(player&, char);
 
-bool validPlace(char, placer&, player&);
-
-char toLowerCase(char&);
-
 void placeShips(player&, ship&, ship&, ship&, ship&, placer&, char);
 
-void occupyPosition(player&);
+bool validPlace(char, placer&, player&);
 
 bool isItAnUnoccupiedPosition(player&, placer&, int);
 
+void occupyPosition(player&);
+
+int interpretLetterAsArrayIndex(char);
+
+char toLowerCase(char&);
+
+void editShipsPosition(player&, ship&, ship&, ship&, ship&, placer&, char);
+
 void fillOccupiedBoardWZero(player&);
 
-void editShipsPosition(player&, ship&, ship&, ship&, ship&, placer&, char); 
-
 void removeShip(player&, ship&, ship&, ship&, ship&, char&);
+
+void boardFromFile(player&);
+
+bool isFileBoardPossible(player&);

@@ -18,10 +18,6 @@
 #include <string>
 
 void opening() {
-    const int FREE_LINES = 5;
-    const int LONG_TIME = 750000000;
-    const int SHORT_TIME = 250000000;
-
     wait(SHORT_TIME);
 
     spacing(FREE_LINES);
@@ -31,7 +27,6 @@ void opening() {
     spacing(FREE_LINES);
 
     wait(LONG_TIME);
-
 }
 
 void clearConsole() { //I called the system, but made sure that it will work both on windows and linux
@@ -49,7 +44,7 @@ void clearConsole() { //I called the system, but made sure that it will work bot
 #endif
 }
 
-void wait(int time) {
+void wait(int time) { //runs a cycle that will need some time to process
     for (int i = 0; i <= time; i++) {
     }
 }
@@ -69,7 +64,7 @@ void pressAnyKeyToContinue() { //I called the system, but made sure that it will
 #endif
 }
 
-void spacing(int freeLines) {
+void spacing(int freeLines) { //leaves n-new lines, depending on freelines' value
     for (int i = 0; i < freeLines; i++) {
         std::cout << std::endl;
     }
@@ -104,5 +99,4 @@ void line() {
 
 void horizontalLine() {
     std::cout << "---------------------------------------------" << std::endl;
-
 }

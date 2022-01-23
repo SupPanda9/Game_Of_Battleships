@@ -17,8 +17,8 @@
 #include "Menu.h"
 
 struct point {
-	char letter;
-	int number;
+	char letter = 'k';
+	int number = 11;
 };
 
 const int MAX_PLAYER_NICKNAME_SIZE = 15;
@@ -28,15 +28,15 @@ const char DESTROYED = 'X';
 const char FOUND = 'F';
 const char UNSUCCESSFUL_GUESS = 'U';
 
+void game(player&, player&);
+
 void players(player&, player&);
 
 void enterPlayers(player &, char *);
 
-void checkForSameNickname(player &, player &);
+void checkForSameNickname(player&, player&);
 
 void nameVerification(player&, player&);
-
-void game(player&, player&);
 
 void turns(player&, player&, int&, int&);
 
