@@ -1,2 +1,67 @@
-INSTRUCTIONS
-Here I will write a few lines of instructions to explain how the game works!
+========================================================================================================
+
+==============================================INSTRUCTIONS==============================================
+
+========================================================================================================
+
+                                           | Entering ships |
+
+Each player chooses where to place a set amount of ships:
+   - four small ships, each consisted of two cells of the board = s
+   - three medium ships, each consisted of three cells of the board = m
+   - two large ships, each consisted of four cells of the board = l
+   - one cruiser, consisted of six cells of the board = c.
+
+There are two options for entering your ships:
+
+   - Through the console by setting the coordinates of the cell and the direction in which the ship would
+     be placed. The board size is 10x10. First, you will be asked to choose the type of ship by entering
+     its initial letter (as given above). Coordinates are given as a letter coordinate {A,B,C,D,E,F,G,H,I,J}
+     for the x axis and a number coordinate {1,2,3,4,5,6,7,8,9,10} for the y axis. Directions are up, down,
+     right and left (u, d, r, l). During the 'entering ships' phase of the game, the player may choose to
+     edit the position of his/her ship, which is done by giving one of the coordinates on which lies a ship,
+     and then reentering it by setting new coordinates and direction.
+
+   - By a premade text file, which should be in this format: 
+      1. the only symbols which are allowed are 'E' and 'S'. Beware! The input is case-sensitive!
+      2. Each row should be on a new line. The last symbol on a line should be '\n' and the one 
+          before - 'E' or 'S'
+      3. The extension of the file should be '.txt'. 
+      4. Ships can have neither shared sides nor corners.
+
+      Example set:
+      SSSEEEEEEE
+      EEEEESSSSE
+      SEESEEEEEE
+      SEESEESSSE
+      EEESEEEEEE
+      SEESEESSEE
+      SEESEEEEES
+      EEESEEEEES
+      SEEEEEEEES
+      SEESSSSEEE
+
+Both of the next two sets of two rows of the board are incorrect.
+SSSEEEEEEE  SSSEEEEEEE
+SSSSEEEEEE  EEESSSSEEE
+
+========================================================================================================
+
+                                           | Real Game |
+
+Players take turns guessing the positions of the other player's ships. Each time the player chooses
+whether to see his boards, presented one at time (you need to press enter to see the second),
+or make a guess. On the first guess, each player sets the coordinates (the same way as in
+entering them). After that, another option appears, which is to guess choosing a direction from the
+last coordinates (right, left, up or down). If you chose the second option, but wanted to choose the
+first instead, write 'b', standing for 'back'. If a player finds an enemy ship, it is his/her turn again.
+The turn ends on guessing unsuccessfully. Seeing your boards does not end the turn. This
+procedure repeats until all enemy ships have been found. 
+
+========================================================================================================
+
+                                          | End of Game |
+
+The winner is the one who found all enemy ships first.
+
+========================================================================================================

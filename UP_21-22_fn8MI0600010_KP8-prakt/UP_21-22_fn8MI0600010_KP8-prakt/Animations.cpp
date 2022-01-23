@@ -19,7 +19,7 @@ void opening() {
 
 }
 
-void clearConsole() {
+void clearConsole() { //I called the system, but made sure that it will work both on windows and linux
 #ifdef _WIN32
     system("cls");
 
@@ -39,7 +39,7 @@ void wait(int time) {
     }
 }
 
-void pressAnyKeyToContinue() {
+void pressAnyKeyToContinue() { //I called the system, but made sure that it will work both on windows and linux
 #ifdef _WIN32
     system("pause");
 

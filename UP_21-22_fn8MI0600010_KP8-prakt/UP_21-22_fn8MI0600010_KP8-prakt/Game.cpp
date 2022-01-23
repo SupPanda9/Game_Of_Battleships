@@ -122,7 +122,7 @@ void checkForSameNickname(player &firstPlayer, player &secondPlayer) { //make it
 			menuEnding();
 
 			std::cout << "Enter different nicknames!" << std::endl;
-			wait(10);
+			wait(SHORT_TIME);
 			
 			pressAnyKeyToContinue();
 			

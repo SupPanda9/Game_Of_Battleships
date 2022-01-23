@@ -55,7 +55,7 @@ void board(player& player) {
 			std::cout << "2. Edit the position of an already placed ship." << std::endl;
 			std::cout << "3. See your board." << std::endl;
 
-			std::cin.ignore();
+			//std::cin.ignore();
 			std::cin >> option;
 
 			if (option == '1' || option == '2' || option == '3') {
@@ -129,6 +129,12 @@ void boardFromFile(player& player) {
 					player.board[i][j] = lines[i][j];
 				}
 			}
+		}
+		if (!isFileBoardPossible(player)) {
+			std::cout << "Your file doesn't fit the criteria to have the right amount of ships." << std::endl;
+			file.close();
+			boardFromFile(player);
+			return;
 		}
 		file.close();
 	}
@@ -608,18 +614,19 @@ void removeShip(player& player, ship& smallShip, ship& mediumShip, ship& largeSh
 	}
 }
 
-//bool isFileBoardPossible(player& player) {
-//	for (int i = 0; i < BOARD_SIZE - 1; i++) {
-//		for (int j = 0; j < BOARD_SIZE-1; j++) {
-//			if (player.board[i][j] == SHIP) {
-//				player.occupiedBoard[i][j] == SHIP;
-//				if (j != BOARD_SIZE - 2) {
-//					player.occupiedBoard[i][j+1] == OCCUPIED;
-//				}
-//				if (j != 0) {
-//					player.occupiedBoard[i][j + 1] == OCCUPIED;
-//				}
-//			}
-//		}
-//	}
-//}
+bool isFileBoardPossible(player& player) {
+	int areThereEnoughShips=0;
+	for (int i = 0; i < BOARD_SIZE - 1; i++) {
+		for (int j = 0; j < BOARD_SIZE-1; j++) {
+			if (player.board[i][j] == SHIP) {
+				areThereEnoughShips++;
+			}
+		}
+	}
+	if (areThereEnoughShips == ALL_SHIPS_PLACES) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}

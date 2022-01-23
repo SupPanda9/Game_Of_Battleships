@@ -11,6 +11,7 @@ const int SMALL_SHIP_COUNT = 4;
 const int MEDIUM_SHIP_COUNT = 3;
 const int LARGE_SHIP_COUNT = 2;
 const int CRUISER_COUNT = 1;
+const int ALL_SHIPS_PLACES = 31;
 
 const char CAPITAL_A = 'A';
 const char CAPITAL_Z = 'Z';
@@ -45,7 +46,7 @@ void board(player&);
 
 void boardFromFile(player&);
 
-//bool isFileBoardPossible(player&);
+bool isFileBoardPossible(player&);
 
 void fillBoard(player&, char);
 
