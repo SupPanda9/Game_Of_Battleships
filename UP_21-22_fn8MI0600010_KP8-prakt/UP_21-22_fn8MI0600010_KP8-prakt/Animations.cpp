@@ -1,3 +1,18 @@
+/**
+*
+* Solution to course project # 8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2021/2022
+*
+* @author Nikolay Nikolaev
+* @idnumber 8MI0600010
+* @compiler VC
+*
+* <prints some fixed combinations of symbols and interacts with the look of the console>
+*
+*/
+
 #include "Animations.h"
 #include <iostream>
 #include <string>
